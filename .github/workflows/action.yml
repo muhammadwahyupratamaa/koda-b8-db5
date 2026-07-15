@@ -1,0 +1,31 @@
+name: Build Docker Image Contact List
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-docker-image:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+          -u "${{ github.actor }}" \
+          --password-stdin
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/contact-list:latest \
+            .
+
+      - name: Push Docker Image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/contact-list:latest
