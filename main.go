@@ -8,6 +8,8 @@ import (
 	"koda-b8-db5/models"
 	"os"
 	"strings"
+	"os/exec"
+	"runtime"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -116,22 +118,38 @@ func deleteContact(conn *pgx.Conn){
 	}
 	fmt.Println("Berhasil menghapus kontak")
 }
+func ClearScreen() {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else {
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
+}
 
 func main(){
 	
 	conn := config.Conn()
 	defer conn.Close(context.Background())
 for{
+	ClearScreen()
 	showMenu()
 	var choice int
 	fmt.Print("Choose :")
 	fmt.Scan(&choice)
 
 	switch choice {
-	case 1: listContact(conn)
-	case 2 : addContact(conn)
-	case 3 : editContact(conn)
-	case 4 : deleteContact(conn)
+	case 1: ClearScreen()
+			listContact(conn)
+	case 2 :ClearScreen()
+			 addContact(conn)
+	case 3 :ClearScreen()
+			 editContact(conn)
+	case 4 :ClearScreen()
+			 deleteContact(conn)
 	case 5 : fmt.Println("Thanks ya")
 			 os.Exit(0)
 	default : fmt.Println("menu tidak tersedia")
