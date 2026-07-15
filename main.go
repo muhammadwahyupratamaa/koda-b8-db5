@@ -38,6 +38,11 @@ func listContact(conn *pgx.Conn){
 	for _, contact := range contacts{
 		fmt.Printf("ID : %d \n Nama: %s \n Email : %s \n Phone: %s \n\n", contact.ID, contact.Nama,contact.Email,contact.Phone)
 	}
+
+	fmt.Print()
+	fmt.Println("Tekan enter bila ingin ke menu")
+	fmt.Scanln()
+
 }
 
 func addContact(conn *pgx.Conn) {
