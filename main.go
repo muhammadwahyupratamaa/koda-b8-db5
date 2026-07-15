@@ -63,11 +63,40 @@ func addContact(conn *pgx.Conn) {
 	fmt.Println("Contact berhasil ditambahkan")
 }
 
+func editContact(conn *pgx.Conn) {
+	var id int
+	var nama string
+	var email string
+	var phone string
+
+	fmt.Print("Masukan ID :")
+	fmt.Scan(&id)
+	fmt.Print("Masukan Nama :")
+	fmt.Scan(&nama)
+	fmt.Print("Masukan Email : ")
+	fmt.Scan(&email)
+	fmt.Print("Masukan Nomornya :")
+	fmt.Scan(&phone)
+
+	commandTag, err := conn.Exec(context.Background(),`
+	UPDATE contacts SET nama=$1, email=$2, phone=$3, updated_at= NOW() WHERE ID=$4`, nama,email,phone,id)
+
+	if err != nil {
+	fmt.Println("Gagal mengedit contact")
+	return
+	}
+	if commandTag.RowsAffected() == 0 {
+    fmt.Println("")
+	return
+	}
+	fmt.Println("Berhasil mengedit kontak")
+}
+
 func main(){
 	
 	conn := config.Conn()
 	defer conn.Close(context.Background())
-
+for{
 	showMenu()
 	var choice int
 	fmt.Print("Choose :")
@@ -76,12 +105,13 @@ func main(){
 	switch choice {
 	case 1: listContact(conn)
 	case 2 : addContact(conn)
-	case 3 : fmt.Println("Masih tahap pembuatan :)")
+	case 3 : editContact(conn)
 	case 4 : fmt.Println("Masih tahap pembuatan :')")
 	case 5 : fmt.Println("Thanks ya")
 			 os.Exit(0)
 	default : fmt.Println("menu tidak tersedia")
 	}
 
+}
 	
 }
