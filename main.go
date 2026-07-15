@@ -92,6 +92,26 @@ func editContact(conn *pgx.Conn) {
 	fmt.Println("Berhasil mengedit kontak")
 }
 
+func deleteContact(conn *pgx.Conn){
+		var id int
+
+		fmt.Print("Masukan id:")
+		fmt.Scan(&id)
+	
+	commandTag,err := conn.Exec(context.Background(), `
+	DELETE from contacts WHERE ID=$1`, id)
+
+	if err != nil {
+		fmt.Println("Gagal menghapus kontak")
+		return
+	}
+	if commandTag.RowsAffected() == 0 {
+		fmt.Println("Kontak tidak di temukan")
+		return
+	}
+	fmt.Println("Berhasil menghapus kontak")
+}
+
 func main(){
 	
 	conn := config.Conn()
@@ -106,7 +126,7 @@ for{
 	case 1: listContact(conn)
 	case 2 : addContact(conn)
 	case 3 : editContact(conn)
-	case 4 : fmt.Println("Masih tahap pembuatan :')")
+	case 4 : deleteContact(conn)
 	case 5 : fmt.Println("Thanks ya")
 			 os.Exit(0)
 	default : fmt.Println("menu tidak tersedia")
